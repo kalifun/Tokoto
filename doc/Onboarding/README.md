@@ -156,4 +156,232 @@ InputDecorationTheme inputDecorationTheme() {
   );
 }
 
+```  
+
+## Splash  
+
+```
+- lib
+  - main.dart
+  - model
+    - constants.dart
+    - size_config.dart
+  - theme
+    - theme.dart
+  - screens
+    - splash
+      - splash_screen.dart
+      - components
+        - body.dart
+        - splash_content.dart
+```  
+
+### SplashScreen  
+
+splash_screen.dart
+```dart
+import 'package:flutter/material.dart';
+
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Body(),
+    );
+  }
+}
+```  
+
+We need to create a dynamic widget,Because we need to scroll to change the page.  
+
+body.dart
+```dart
+import 'package:flutter/material.dart';
+
+class Body extends StatefulWidget {
+  Body({Key key}) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: Text("data"),
+      ),
+    );
+  }
+}
+
+
+```  
+Let's change the main program and see what happens.  
+```dart
+import 'package:Tokoto/screens/splash/splash_screen.dart';
+import 'package:Tokoto/theme/theme.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false, // 去除DEBUG标识
+      title: 'Flutter Demo',
+      theme: theme(),
+      home: SplashScreen(),
+    );
+  }
+}
+
+```  
+
+![](image/one.png)  
+
+## title  
+
+```dart
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Expanded(
+            flex: 3,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  "ToKoTo",
+                  style: TextStyle(
+                      fontSize: getProportionateScreenWidth(36),
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            )),
+        Expanded(flex: 2, child: SizedBox())
+      ],
+    );
+  }
+}
+```  
+![](image/title.png)  
+
+Change to `SafeArea` so that the status bar is automatically removed.
+```dart
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: <Widget>[
+          Expanded(
+              flex: 3,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "ToKoTo",
+                    style: TextStyle(
+                        fontSize: getProportionateScreenWidth(36),
+                        color: kPrimaryColor,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              )),
+          Expanded(flex: 2, child: SizedBox())
+        ],
+      ),
+    );
+  }
+}
+```  
+![](image/title2.png)
+
+```dart
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                flex: 3,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "ToKoTo",
+                      style: TextStyle(
+                          fontSize: getProportionateScreenWidth(36),
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text("Welcome to Tokoto, Let’s shop!"),
+                  ],
+                )),
+            Expanded(flex: 2, child: SizedBox())
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+```  
+
+![](image/title3.png)  
+
+Try adding images
+
+```dart
+Spacer(),
+Image.asset(
+  "assets/images/splash_1.png",
+  height: getProportionateScreenHeight(265),
+  width: getProportionateScreenWidth(235),
+)
+```  
+![](image/image.png)  
+
+Encapsulate the two parts into a Sidget.
+```dart
+class SplashContent extends StatelessWidget {
+  const SplashContent({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Spacer(),
+        Text(
+          "ToKoTo",
+          style: TextStyle(
+              fontSize: getProportionateScreenWidth(36),
+              color: kPrimaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        Text("Welcome to Tokoto, Let’s shop!"),
+        Spacer(
+          flex: 2,
+        ),
+        Image.asset(
+          "assets/images/splash_1.png",
+          height: getProportionateScreenHeight(265),
+          width: getProportionateScreenWidth(235),
+        )
+      ],
+    );
+  }
+}
+
 ```
