@@ -351,7 +351,7 @@ Image.asset(
 ```  
 ![](image/image.png)  
 
-Encapsulate the two parts into a Sidget.
+Encapsulate the two parts into a Widget.
 ```dart
 class SplashContent extends StatelessWidget {
   const SplashContent({
