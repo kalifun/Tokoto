@@ -13,7 +13,7 @@ This is achieved step by step according to the homework, if you are interested y
 ### [Onboarding](doc/Onboarding/README.md)
 
 ## Todo  
-- [ ] Onboarding
+- [x] Onboarding
 - [ ] Login
 - [ ] Forgot Password
 - [ ] Sign Up
