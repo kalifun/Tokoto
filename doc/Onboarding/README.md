@@ -384,4 +384,283 @@ class SplashContent extends StatelessWidget {
   }
 }
 
+```  
+
+## Dynamic data  
+We need to create a batch of data。 
+```dart
+List<Map<String, String>> splashData = [
+    {
+      "text": "Welcome to Tokoto, Let’s shop!",
+      "image": "assets/images/splash_1.png"
+    },
+    {
+      "text":
+          "We help people conect with store \naround United State of America",
+      "image": "assets/images/splash_2.png"
+    },
+    {
+      "text": "We show the easy way to shop. \nJust stay at home with us",
+      "image": "assets/images/splash_3.png"
+    },
+  ];
+```  
+Because of the need to slide. So let's change it to `PageView`.  
+```dart 
+child: PageView.builder(
+  itemCount: splashData.length,
+  itemBuilder: (context, index) => SplashContent(
+    image: splashData[index]["image"],
+    text: splashData[index]["text"],
+  ),
+)),
+```  
+SplashContent Widget  
+```dart
+const SplashContent({
+    Key key,
+    this.image,
+    this.text,
+  }) : super(key: key);
+  final String text;
+  final String image;
+```  
+We'll create a file for `SplashContent` to migrate the `widget` over.  
+splash_content.dart
+```dart
+import 'package:Tokoto/model/constants.dart';
+import 'package:Tokoto/model/size_config.dart';
+import 'package:flutter/material.dart';
+
+class SplashContent extends StatelessWidget {
+  const SplashContent({
+    Key key,
+    this.image,
+    this.text,
+  }) : super(key: key);
+  final String text;
+  final String image;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Spacer(),
+        Text(
+          "ToKoTo",
+          style: TextStyle(
+              fontSize: getProportionateScreenWidth(36),
+              color: kPrimaryColor,
+              fontWeight: FontWeight.bold),
+        ),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+        Spacer(
+          flex: 2,
+        ),
+        Image.asset(
+          image,
+          height: getProportionateScreenHeight(265),
+          width: getProportionateScreenWidth(235),
+        )
+      ],
+    );
+  }
+}
+
+```   
+## Sliding Dot  
+
+```dart
+Expanded(
+  flex: 2,
+  child: Column(
+    children: <Widget>[
+      Container(
+        margin: EdgeInsets.only(right: 5),
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+            color: kPrimaryColor),
+      )
+    ],
+  ))
+```
+
+![](image/dot.png)
+
+`Container` Extract Method   
+
+```dart
+Container buildDot() {
+  return Container(
+    margin: EdgeInsets.only(right: 5),
+    width: 6,
+    height: 6,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(3), color: kPrimaryColor),
+  );
+}
+```  
+
+The complete code  
+
+```dart
+class _BodyState extends State<Body> {
+  int curragePage = 0;
+  List<Map<String, String>> splashData = [
+    {
+      "text": "Welcome to Tokoto, Let’s shop!",
+      "image": "assets/images/splash_1.png"
+    },
+    {
+      "text":
+          "We help people conect with store \naround United State of America",
+      "image": "assets/images/splash_2.png"
+    },
+    {
+      "text": "We show the easy way to shop. \nJust stay at home with us",
+      "image": "assets/images/splash_3.png"
+    },
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+                flex: 3,
+                child: PageView.builder(
+                  onPageChanged: (value) {
+                    setState(() {
+                      curragePage = value;
+                    });
+                  },
+                  itemCount: splashData.length,
+                  itemBuilder: (context, index) => SplashContent(
+                    image: splashData[index]["image"],
+                    text: splashData[index]["text"],
+                  ),
+                )),
+            Expanded(
+                flex: 2,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                          splashData.length, (index) => buildDot(index: index)),
+                    )
+                  ],
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container buildDot({int index}) {
+    return Container(
+      margin: EdgeInsets.only(right: 5),
+      width: curragePage == index ? 20 : 6,
+      height: 6,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(3),
+          color: curragePage == index ? kPrimaryColor : Color(0xFF8D8D8D)),
+    );
+  }
+}
+
+```
+
+## Button  
+
+```dart
+Expanded(
+  flex: 2,
+  child: Padding(
+    padding: EdgeInsets.symmetric(
+        horizontal: getProportionateScreenWidth(20)),
+    child: Column(
+      children: <Widget>[
+        Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(splashData.length,
+              (index) => buildDot(index: index)),
+        ),
+        Spacer(
+          flex: 3,
+        ),
+        SizedBox(
+          width: double.infinity,
+          height: getProportionateScreenHeight(56),
+          child: FlatButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)),
+            onPressed: () {},
+            child: Text(
+              "Continue",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: getProportionateScreenWidth(18)),
+            ),
+            color: kPrimaryColor,
+          ),
+        ),
+        Spacer()
+      ],
+    ),
+  ))
+```  
+![](image/target.png)  
+
+## Add Router  
+splash_screen.dart
+```dart
+class SplashScreen extends StatelessWidget {
+  static String routeName = "/splash";
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    return Scaffold(
+      body: Body(),
+    );
+  }
+}
+```  
+router/router.dart
+```dart
+import 'dart:js';
+
+import 'package:Tokoto/screens/splash/splash_screen.dart';
+import 'package:flutter/widgets.dart';
+
+final Map<String, WidgetBuilder> routes = {
+  SplashScreen.routeName: (context) => SplashScreen()
+};
+
+```  
+main.dart
+```dart
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false, // 去除DEBUG标识
+      title: 'Flutter Demo',
+      theme: theme(),
+      // home: SplashScreen(),
+      initialRoute: SplashScreen.routeName,
+      routes: routes,
+    );
+  }
+}
+
 ```

@@ -1,3 +1,4 @@
+import 'package:Tokoto/router/router.dart';
 import 'package:Tokoto/screens/splash/splash_screen.dart';
 import 'package:Tokoto/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false, // 去除DEBUG标识
       title: 'Flutter Demo',
       theme: theme(),
-      home: SplashScreen(),
+      // home: SplashScreen(),
+      initialRoute: SplashScreen.routeName,
+      routes: routes,
     );
   }
 }
